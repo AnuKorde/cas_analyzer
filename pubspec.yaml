@@ -1,0 +1,6 @@
+name: cas_analyzer
+description: Offline CAS Analyzer
+publish_to: 'none'
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
