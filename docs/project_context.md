@@ -217,6 +217,11 @@ Use these when more detail is required:
 - Project structure: `docs/00_Project/08_ProjectStructure.md`
 - Development workflow: `docs/00_Project/09_DevelopmentWorkflow.md`
 - Terminology: `docs/00_Project/10_Glossary.md`
+- Solution architecture: `docs/01_Architecture/SolutionArchitecture.md`
+- Architecture principles: `docs/01_Architecture/ArchitecturePrinciples.md`
+- Module architecture: `docs/01_Architecture/ModuleArchitecture.md`
+- Data flow architecture: `docs/01_Architecture/DataFlowArchitecture.md`
+- Import pipeline architecture: `docs/01_Architecture/ImportPipelineArchitecture.md`
 - Architecture: `docs/01_Architecture/`
 - Database: `docs/02_Database/`
 - Parser: `docs/03_Parser/`
@@ -245,4 +250,9 @@ Keep the document concise: summarize decisions and link to their authoritative d
 
 | Version | Date       | Author       | Description                              |
 | ------- | ---------- | ------------ | ---------------------------------------- |
+| 1.5     | 2026-07-05 | Project Team | Added the import pipeline architecture reference. |
+| 1.4     | 2026-07-05 | Project Team | Added the module architecture reference. |
+| 1.3     | 2026-07-05 | Project Team | Added the data flow architecture reference. |
+| 1.2     | 2026-07-05 | Project Team | Added the architecture principles reference. |
+| 1.1     | 2026-07-05 | Project Team | Added the solution architecture reference. |
 | 1.0     | 2026-07-05 | Project Team | Initial consolidated project context. |
