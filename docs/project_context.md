@@ -217,11 +217,19 @@ Use these when more detail is required:
 - Project structure: `docs/00_Project/08_ProjectStructure.md`
 - Development workflow: `docs/00_Project/09_DevelopmentWorkflow.md`
 - Terminology: `docs/00_Project/10_Glossary.md`
-- Solution architecture: `docs/01_Architecture/SolutionArchitecture.md`
-- Architecture principles: `docs/01_Architecture/ArchitecturePrinciples.md`
-- Module architecture: `docs/01_Architecture/ModuleArchitecture.md`
-- Data flow architecture: `docs/01_Architecture/DataFlowArchitecture.md`
-- Import pipeline architecture: `docs/01_Architecture/ImportPipelineArchitecture.md`
+- Solution architecture: `docs/01_Architecture/00_SolutionArchitecture.md`
+- Architecture principles: `docs/01_Architecture/01_ArchitecturePrinciples.md`
+- Module architecture: `docs/01_Architecture/02_ModuleArchitecture.md`
+- Data flow architecture: `docs/01_Architecture/03_DataFlowArchitecture.md`
+- Import pipeline architecture: `docs/01_Architecture/04_ImportPipelineArchitecture.md`
+- Error handling architecture: `docs/01_Architecture/05_ErrorHandlingArchitecture.md`
+- Security architecture: `docs/01_Architecture/06_SecurityArchitecture.md`
+- Database architecture: `docs/02_Database/00_DatabaseArchitecture.md`
+- Conceptual data model: `docs/02_Database/01_ConceptualDataModel.md`
+- Physical schema: `docs/02_Database/02_PhysicalSchema.md`
+- Migration strategy: `docs/02_Database/03_MigrationStrategy.md`
+- Repository design: `docs/02_Database/04_RepositoryDesign.md`
+- Backup, restore, and cleanup: `docs/02_Database/05_BackupRestoreAndCleanup.md`
 - Architecture: `docs/01_Architecture/`
 - Database: `docs/02_Database/`
 - Parser: `docs/03_Parser/`
@@ -250,6 +258,13 @@ Keep the document concise: summarize decisions and link to their authoritative d
 
 | Version | Date       | Author       | Description                              |
 | ------- | ---------- | ------------ | ---------------------------------------- |
+| 1.12    | 2026-07-05 | Project Team | Added the backup, restore, and cleanup reference. |
+| 1.11    | 2026-07-05 | Project Team | Added the repository design reference. |
+| 1.10    | 2026-07-05 | Project Team | Added the migration strategy reference. |
+| 1.9     | 2026-07-05 | Project Team | Added the physical schema reference. |
+| 1.8     | 2026-07-05 | Project Team | Added the conceptual data model reference. |
+| 1.7     | 2026-07-05 | Project Team | Added the database architecture reference. |
+| 1.6     | 2026-07-05 | Project Team | Updated architecture references to numbered filenames. |
 | 1.5     | 2026-07-05 | Project Team | Added the import pipeline architecture reference. |
 | 1.4     | 2026-07-05 | Project Team | Added the module architecture reference. |
 | 1.3     | 2026-07-05 | Project Team | Added the data flow architecture reference. |
