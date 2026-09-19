@@ -32,17 +32,18 @@ Version 1 is a single-user, fully offline Android application.
 - Support searchable, text-based NSDL and CDSL statements.
 - Show import progress and import history.
 - Detect duplicate imports.
-- Extract investor details, demat accounts, mutual funds, equities, transactions, nominees, and available corporate actions.
+- Extract investor details, demat accounts, mutual funds, equities, transactions, nominees, and available corporate-action records.
 - Validate extracted data and persist it in normalized SQLite tables.
 - Preserve historical transactions and support schema migrations.
 - Display dashboard summaries, holdings, transactions, and asset allocation.
-- Provide basic diversification and concentration analysis.
+- Provide source-reported asset allocation and basic concentration analysis.
 - Provide explainable, rule-based recommendations.
-- Detect missing nominees and duplicate investments.
-- Generate and export portfolio, holdings, and transaction reports.
+- Detect missing nominees.
+- Export portfolio, holdings, and transaction reports as CSV files.
 - Provide application settings and light/dark themes.
 
-Backup and restore is optional for Version 1. Advanced analytics such as XIRR may be deferred if they are not ready for the initial release.
+Backup/restore, PDF reports, sector/category reference-data analysis, fund-overlap
+inference, and advanced analytics such as XIRR are deferred from Version 1.
 
 ### Excluded from Version 1
 
@@ -56,6 +57,7 @@ Backup and restore is optional for Version 1. Advanced analytics such as XIRR ma
 - Push notifications and market alerts.
 - AI-generated investment advice or natural-language portfolio assistance.
 - Encrypted database and biometric authentication; these are future security enhancements.
+- Backup and restore, PDF report generation, sector/category analysis, fund-overlap inference, and performance analytics.
 
 ## Core Product Flow
 
@@ -151,6 +153,7 @@ Feature IDs are defined in `docs/00_Project/03_FeatureCatalog.md` (`FT-001` thro
 - Do not silently discard parse failures or calculation errors.
 - Show user-friendly errors while retaining safe diagnostic context.
 - Preserve provenance so important displayed values can be traced to their source statement and calculation.
+- Label every displayed portfolio value with its source statement date; do not present statement-reported values as live values.
 - Design imports for idempotency and transactional consistency.
 - Keep parser variants modular because NSDL/CDSL layouts can change.
 - Critical parsers, reconciliation rules, calculations, and recommendation rules require focused unit tests.
@@ -168,20 +171,25 @@ Feature IDs are defined in `docs/00_Project/03_FeatureCatalog.md` (`FT-001` thro
 - Documentation is Markdown, uses Mermaid where helpful, contains cross-references and revision history, and changes alongside implementation.
 - Use preferred project terms: CAS Statement, Portfolio, Holding, Transaction, Repository, Use Case, and Widget.
 
+## Approved Foundation Decisions
+
+- Financial values use approved fixed-scale integers; `double` and SQLite `REAL`
+  are prohibited for financial values (ADR-0001).
+- Exact duplicate imports use a SHA-256 file digest. Record reconciliation uses
+  approved semantic fingerprints and source provenance (ADR-0002).
+- An import is atomic for material financial data; tolerated unknown/irrelevant
+  sections are recorded as warnings (ADR-0003).
+- Portfolio values are source-reported statement values selected by latest
+  statement end date, not import time or live pricing (ADR-0004).
+
 ## Known Open Decisions
 
 Do not silently invent answers to these questions. Resolve them in the appropriate design document or ADR before the affected implementation:
 
-1. How "current portfolio value" is defined without live prices or NAV, including valuation date and source.
-2. Whether and how password-protected CAS PDFs are supported.
-3. The canonical import identity and duplicate rule: file hash, content fingerprint, statement period, accounts, or a combination.
-4. Reconciliation behavior for overlapping statements and repeated transactions.
-5. Whether a partially parsed statement is rejected atomically or imported with explicit warnings.
-6. V1 protection for sensitive local data while database encryption is deferred.
-7. Exact recommendation boundaries, thresholds, explanations, and financial disclaimers.
-8. How sector/category reference data is obtained when it is absent from CAS and networking is excluded.
-9. Supported report/export formats and safeguards for sensitive exported files.
-10. Syncfusion licensing and the exact supported CAS/PDF capabilities.
+1. Whether and how password-protected CAS PDFs are supported.
+2. V1 protection for sensitive local data while database encryption is deferred.
+3. Exact recommendation thresholds, explanations, and financial disclaimers.
+4. Syncfusion licensing and the exact supported CAS/PDF capabilities.
 
 ## AI Assistant Working Instructions
 
@@ -258,6 +266,7 @@ Keep the document concise: summarize decisions and link to their authoritative d
 
 | Version | Date       | Author       | Description                              |
 | ------- | ---------- | ------------ | ---------------------------------------- |
+| 1.13    | 2026-09-19 | Project Team | Approved foundation policies, narrowed Version 1 scope, and defined valuation semantics. |
 | 1.12    | 2026-07-05 | Project Team | Added the backup, restore, and cleanup reference. |
 | 1.11    | 2026-07-05 | Project Team | Added the repository design reference. |
 | 1.10    | 2026-07-05 | Project Team | Added the migration strategy reference. |

@@ -55,7 +55,7 @@ Where those choices affect columns or uniqueness rules, this document marks them
 | Dates | ISO-8601 calendar date text | `statement_date TEXT` |
 | Booleans | integer 0/1 with check constraint | `is_deleted INTEGER NOT NULL DEFAULT 0` |
 | Enums | lowercase text with check constraint or lookup table | `status TEXT NOT NULL` |
-| Exact decimals | text or scaled integer after precision ADR | `quantity_value TEXT` |
+| Exact decimals | fixed-scale signed integer (ADR-0001) | `quantity_value INTEGER` |
 | Soft lifecycle fields | explicit status fields, not silent deletion | `status`, `deleted_at` |
 
 All schema names must remain implementation-friendly for Dart data mappers and SQLite migrations.
@@ -83,11 +83,11 @@ Not every table needs every standard column. Join tables, lookup tables, and mig
 | Enum/code | `TEXT` | Use check constraints for stable finite sets where practical. |
 | Boolean | `INTEGER` | Use `CHECK(value IN (0, 1))`. |
 | Count | `INTEGER` | Non-negative where applicable. |
-| Exact decimal | Pending ADR: `TEXT` decimal string or scaled `INTEGER` | Must not be `REAL`. |
+| Exact decimal | Fixed-scale signed `INTEGER` | Must not be `REAL`; scales are defined by ADR-0001. |
 | Sensitive text | `TEXT` | Store only when required; never log. |
 | JSON metadata | `TEXT` only for bounded safe metadata | Avoid hiding core query fields in JSON. |
 
-The precision ADR must decide exact decimal representation before financial columns are implemented.
+ADR-0001 defines the exact decimal representation before financial columns are implemented.
 
 ## 7. Table Groups
 
@@ -174,8 +174,8 @@ Represents processing for one selected file or logical statement input.
 | `import_batch_id` | Yes | Parent batch. |
 | `status` | Yes | `pending`, `validating`, `extracting`, `parsing`, `reconciling`, `persisting`, `completed`, `duplicate`, `rejected`, `cancelled`, `failed`. |
 | `issuer_type` | Optional | `nsdl`, `cdsl`, `unknown`. |
-| `file_fingerprint` | Pending | Safe file/content fingerprint if approved. |
-| `content_fingerprint` | Pending | Safe logical fingerprint if approved. |
+| `file_fingerprint` | Yes | SHA-256 digest of complete selected file (ADR-0002). |
+| `content_fingerprint` | No | Not used as a Version 1 duplicate key. |
 | `parser_version` | Optional | Parser version used if detection succeeded. |
 | `detector_version` | Optional | Detector version used if detection succeeded. |
 | `failure_code` | Optional | Safe error code. |
@@ -192,7 +192,7 @@ Indexes:
 
 - `idx_import_attempts_batch_id` on `import_batch_id`.
 - `idx_import_attempts_status` on `status`.
-- Pending unique index on approved fingerprint/identity fields.
+- Unique index on committed-import `file_fingerprint` (ADR-0002).
 
 Privacy:
 
@@ -210,13 +210,13 @@ Represents a recognized supported CAS Statement.
 | `statement_period_start` | Optional | Date if available. |
 | `statement_period_end` | Optional | Date if available. |
 | `statement_date` | Optional | Date if available. |
-| `source_identity` | Pending | Approved logical statement identity. |
+| `source_identity` | Yes | Statement metadata/provenance identity; not a duplicate key. |
 | `created_at` | Yes | UTC timestamp. |
 
 Constraints:
 
 - Foreign key to `import_attempts`.
-- Pending unique constraint on approved statement identity.
+- Statement identity index for provenance/querying; it is not a duplicate constraint (ADR-0002).
 
 Indexes:
 
@@ -284,7 +284,7 @@ Represents a demat account, mutual fund folio, or other supported statement acco
 | `account_type` | Yes | `demat`, `mutual_fund_folio`, `other`. |
 | `display_label` | Optional | User-safe label; may still be sensitive. |
 | `masked_identifier` | Optional | Masked source identifier if useful. |
-| `identity_key` | Pending | Approved account identity key. |
+| `identity_key` | Yes | Normalized account identity input used by reconciliation (ADR-0002). |
 | `source_provenance_id` | Optional | Source for account details. |
 | `created_at` | Yes | UTC timestamp. |
 | `updated_at` | Yes | UTC timestamp. |
@@ -293,7 +293,7 @@ Indexes:
 
 - `idx_investment_accounts_investor_id` on `investor_id`.
 - `idx_investment_accounts_type` on `account_type`.
-- Pending unique/index on approved account identity.
+- Unique/index on the normalized account identity defined by ADR-0002.
 
 ### 10.3 `account_statement_links`
 
@@ -379,8 +379,8 @@ Represents an accepted holding/position record.
 | `instrument_id` | Yes | Held instrument. |
 | `source_provenance_id` | Yes | Source context. |
 | `statement_date` | Optional | Date the holding was reported. |
-| `quantity_value` | Pending | Exact decimal; must not be REAL. |
-| `quantity_scale` | Pending | If scaled-integer representation is approved. |
+| `quantity_value` | Yes | Signed fixed-scale integer; never REAL. |
+| `quantity_scale` | No | Quantity scale is fixed by ADR-0001. |
 | `market_value` | Pending | Source-reported value only; not invented. |
 | `market_value_currency` | Optional | Likely INR for V1, but policy must confirm. |
 | `valuation_date` | Optional | Required if value is present and available. |
@@ -394,7 +394,7 @@ Indexes:
 - `idx_holdings_instrument_id` on `instrument_id`.
 - `idx_holdings_statement_date` on `statement_date`.
 - `idx_holdings_account_instrument` on `investment_account_id`, `instrument_id`.
-- Pending unique index based on reconciliation policy.
+- Unique snapshot key: normalized account identity, instrument identity, and statement date (ADR-0002).
 
 ### 12.2 `transactions`
 
@@ -409,10 +409,10 @@ Represents an accepted historical transaction.
 | `transaction_date` | Yes | Source-reported transaction date. |
 | `transaction_type` | Yes | Normalized type. |
 | `source_transaction_type` | Optional | Original type text only if safe and required; avoid raw snippets. |
-| `quantity_value` | Pending | Exact decimal. |
-| `amount_value` | Pending | Exact decimal. |
+| `quantity_value` | Yes | Signed fixed-scale integer. |
+| `amount_value` | Yes | Signed paise integer. |
 | `amount_currency` | Optional | Likely INR for V1, but policy must confirm. |
-| `price_or_nav_value` | Pending | Exact decimal if available. |
+| `price_or_nav_value` | Yes | Signed fixed-scale integer if available. |
 | `transaction_status` | Yes | `accepted`, `reconciled`, `superseded`, pending policy. |
 | `created_at` | Yes | UTC timestamp. |
 | `updated_at` | Yes | UTC timestamp. |
@@ -422,7 +422,7 @@ Indexes:
 - `idx_transactions_account_date` on `investment_account_id`, `transaction_date`.
 - `idx_transactions_instrument_date` on `instrument_id`, `transaction_date`.
 - `idx_transactions_type` on `transaction_type`.
-- Pending unique index based on transaction identity policy.
+- Unique transaction semantic fingerprint with a provenance join table (ADR-0002).
 
 ### 12.3 `nominations`
 
@@ -436,7 +436,7 @@ Represents nominee details or nomination status.
 | `nomination_status` | Yes | `registered`, `not_registered`, `not_available`, `unknown`. |
 | `nominee_name` | Optional | Sensitive; store only when required. |
 | `nominee_relationship` | Optional | Sensitive. |
-| `allocation_percent_value` | Pending | Exact decimal if available. |
+| `allocation_percent_value` | Yes | Fixed-scale integer if available. |
 | `created_at` | Yes | UTC timestamp. |
 | `updated_at` | Yes | UTC timestamp. |
 
@@ -461,8 +461,8 @@ Represents available source-reported corporate actions.
 | `source_provenance_id` | Yes | Source context. |
 | `action_type` | Yes | `bonus`, `split`, `dividend`, `merger`, `other`. |
 | `action_date` | Optional | If available. |
-| `quantity_value` | Pending | Exact decimal if applicable. |
-| `amount_value` | Pending | Exact decimal if applicable. |
+| `quantity_value` | Yes | Fixed-scale integer if applicable. |
+| `amount_value` | Yes | Signed paise integer if applicable. |
 | `amount_currency` | Optional | If amount is present. |
 | `created_at` | Yes | UTC timestamp. |
 
@@ -557,7 +557,7 @@ Required constraints:
 - Not-null constraints for required relationships and statuses.
 - Composite primary key for `account_statement_links`.
 
-Pending constraints:
+Approved constraints:
 
 - Unique import identity.
 - Unique statement identity.
@@ -566,7 +566,7 @@ Pending constraints:
 - Unique holding identity.
 - Unique transaction identity.
 
-These are pending because they depend on approved identity and reconciliation rules.
+These are required by ADR-0002 and must be implemented with provenance links.
 
 ## 17. Index Strategy
 
@@ -731,7 +731,7 @@ When generating implementation from this document:
 
 - Treat this file as the draft schema contract, not final migration SQL.
 - Do not create financial `REAL` columns.
-- Do not finalize unique identity indexes until the identity/reconciliation ADRs are approved.
+- Implement the ADR-0002 unique identity indexes with migration and provenance tests.
 - Keep raw PDF bytes, extracted text, source snippets, and passwords out of the schema.
 - Ensure foreign keys are enabled in SQLite tests and runtime.
 - Add migration and repository tests for every table that reaches implementation.
@@ -741,4 +741,5 @@ When generating implementation from this document:
 
 | Version | Date | Author | Description |
 | --- | --- | --- | --- |
+| 0.2 | 2026-09-19 | Project Team | Applied ADR-0001 and ADR-0002 to financial columns and identity constraints. |
 | 0.1 | 2026-07-05 | Project Team | Initial draft of the physical schema blueprint. |

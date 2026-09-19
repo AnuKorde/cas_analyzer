@@ -23,12 +23,10 @@ This model covers:
 - Import diagnostics and validation issues.
 - Read needs for dashboard, holdings, transactions, analytics, recommendations, and reports.
 
-This model does not decide:
-
-- Canonical import identity or duplicate algorithm.
-- Overlap/re-import reconciliation behavior.
-- Partial import policy.
-- Exact decimal, date, and money storage representation.
+This model is governed by ADR-0001 through ADR-0004 for exact financial-value
+representation, identity/reconciliation, atomic imports, and valuation. It does
+not decide password-protected PDF behavior, backup format, or local-data
+protection beyond the approved Version 1 baseline.
 - Sector/category reference data source.
 - Backup/restore archive model.
 
@@ -113,7 +111,7 @@ Represents an attempt to process one selected file or logical input.
 Responsibilities:
 
 - Track import pipeline state and terminal outcome.
-- Hold safe fingerprint/identity metadata once the identity policy is approved.
+- Hold safe file-digest and statement-identity metadata as defined by ADR-0002.
 - Link diagnostics and successful CAS Statement metadata.
 - Distinguish cancellation, duplicate, rejection, and technical failure.
 
@@ -167,7 +165,7 @@ Responsibilities:
 Notes:
 
 - Version 1 is single-user, but imported CAS data may still report one or more holders or account relationships.
-- The exact matching policy for investor identity across imports remains part of the import identity/reconciliation decision.
+- Investor identity normalization follows the account identity inputs defined by ADR-0002; it must never enter logs.
 
 #### Investment Account
 
@@ -271,8 +269,8 @@ Responsibilities:
 
 Notes:
 
-- A holding is not necessarily a live market position; it reflects accepted data from one or more CAS Statements and reconciliation rules.
-- The definition of current portfolio value without live NAV/prices remains open.
+- A holding is a statement-dated snapshot, not necessarily a live market position.
+- Portfolio values follow ADR-0004 and are labelled as statement-reported values.
 
 #### Transaction
 
@@ -287,7 +285,7 @@ Responsibilities:
 
 Notes:
 
-- Transaction duplicate identity is a critical open decision.
+- Transaction semantic fingerprints and multi-statement provenance follow ADR-0002.
 - Transaction types must be normalized carefully without losing source meaning.
 
 #### Corporate Action
@@ -477,8 +475,8 @@ The physical schema should:
 - Preserve the conceptual separation between import/source, party/account, instrument, financial record, and diagnostics.
 - Use stable local identifiers.
 - Use foreign keys to enforce required relationships.
-- Use unique constraints for approved import and record identity decisions.
-- Use exact storage representations for financial values once approved.
+- Use unique constraints for the file digest, transaction fingerprint, and holding-snapshot key defined by ADR-0002.
+- Use fixed-scale integer representations defined by ADR-0001.
 - Use indexes aligned to the query support expectations in this document.
 - Avoid storing raw source content by default.
 
@@ -488,11 +486,6 @@ The physical schema may choose different table boundaries from the conceptual en
 
 | Priority | Decision | Impact |
 | --- | --- | --- |
-| Critical | Canonical import identity and duplicate algorithm | Import Attempt, CAS Statement, Provenance, uniqueness rules. |
-| Critical | Overlap and re-import reconciliation | Holding, Transaction, provenance, history, deletion behavior. |
-| Critical | Partial import policy | Import Attempt outcomes, diagnostics, accepted record boundaries. |
-| Critical | Money, unit, price, and date representation | Holding, Transaction, valuation, analytics, reports. |
-| High | Current portfolio value definition without live prices | Dashboard, holding detail, allocation, reports. |
 | High | Password-protected CAS PDF support | Import Attempt, diagnostics, security handling. |
 | High | Diagnostic retention policy | Import history, privacy, cleanup. |
 | Medium | Sector/category reference source | Instrument, analytics, recommendations. |
@@ -535,7 +528,7 @@ This model supports:
 When generating schema or repository code from this model:
 
 - Treat this file as conceptual guidance, not a table specification.
-- Do not invent answers for identity, overlap, precision, valuation, partial import, or backup decisions.
+- Apply ADR-0001 through ADR-0004; do not invent answers for the remaining password, backup, or security decisions.
 - Preserve provenance relationships for accepted financial records.
 - Keep source-reported and derived values distinct.
 - Avoid storing raw PDF content, extracted text, passwords, or raw snippets by default.
@@ -546,4 +539,5 @@ When generating schema or repository code from this model:
 
 | Version | Date | Author | Description |
 | --- | --- | --- | --- |
+| 0.2 | 2026-09-19 | Project Team | Applied ADR-0001 through ADR-0004. |
 | 0.1 | 2026-07-05 | Project Team | Initial draft of the conceptual data model. |

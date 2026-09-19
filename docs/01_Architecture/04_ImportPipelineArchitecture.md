@@ -926,10 +926,6 @@ Do not introduce a generic workflow framework solely to encode this pipeline; ex
 
 | Priority | Decision | Blocks |
 | --- | --- | --- |
-| Critical | Canonical import and record identity | IP-03, IP-09, IP-11; duplicate feature |
-| Critical | Overlap/re-import reconciliation | IP-09, IP-10, database design |
-| Critical | Atomic rejection versus explicit partial import | IP-08-IP-11, issue severity, UX |
-| Critical | Money/unit precision and normalization | IP-07-IP-11, database schema |
 | High | Password-protected PDF handling | IP-04, security and UI |
 | High | Background execution/isolate/plugin model | IP-04-IP-08, cancellation, performance |
 | High | Import transaction/unit-of-work ownership | IP-11, repository ownership |
@@ -981,7 +977,8 @@ When generating pipeline implementation:
 - Do not expose Syncfusion, File Picker, SQLite, Riverpod, or Flutter types in domain contracts.
 - Treat cancellation, retry, cleanup, progress, and failure tests as part of the feature, not polish.
 - Never include source/financial content in logs, progress, exceptions, or test snapshots.
-- Do not choose defaults for open identity, overlap, password, precision, or partial-import policies.
+- Apply ADR-0001 through ADR-0003; do not choose a default for the remaining
+  password-handling policy.
 - Request an ADR before fixing the isolate/background mechanism or accepted-change-set transaction design.
 - Update this document when a stage, durable boundary, parser selection mechanism, or terminal outcome changes.
 
@@ -989,4 +986,5 @@ When generating pipeline implementation:
 
 | Version | Date | Author | Description |
 | --- | --- | --- | --- |
+| 0.2 | 2026-09-19 | Project Team | Applied ADR-0001 through ADR-0003 to import policy. |
 | 0.1 | 2026-07-05 | Project Team | Initial draft of the import pipeline architecture. |

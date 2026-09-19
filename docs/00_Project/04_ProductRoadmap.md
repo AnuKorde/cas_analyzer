@@ -91,17 +91,13 @@ Deliver a stable offline application capable of importing and analyzing standard
 
 ### Features
 
-* PDF Import
-* CAS Parsing
-* SQLite Storage
-* Portfolio Dashboard
-* Holdings
-* Transactions
-* Portfolio Summary
-* Basic Analytics
-* Basic Recommendations
-* Reports
-* Application Settings
+* PDF import and parsing for approved text-based CAS layouts
+* SQLite storage, migrations, exact duplicate detection, and atomic imports
+* Dashboard, holdings, and transaction views based on committed data
+* Source-reported portfolio value and asset allocation, labelled by statement date
+* Missing-nominee and concentration warnings
+* CSV export of portfolio, holdings, and transactions
+* Theme, import-history, and application settings
 
 ### Success Criteria
 
@@ -127,6 +123,7 @@ Expand analytical capabilities without changing the core architecture.
 * Improved recommendation engine
 * Import performance improvements
 * Parser optimizations
+* Optional local backup and restore after its security design is approved
 
 ### Success Criteria
 
@@ -151,6 +148,7 @@ Introduce advanced investment analysis and planning tools.
 * Fund overlap analysis
 * Historical portfolio snapshots
 * Goal tracking (initial)
+* PDF report generation and richer report formats
 
 ### Success Criteria
 
@@ -295,4 +293,5 @@ Future versions of this roadmap may include:
 
 | Version | Date       | Author       | Description             |
 | ------- | ---------- | ------------ | ----------------------- |
+| 1.1     | 2026-09-19 | Project Team | Defined the Version 1 delivery boundary and deferred scope. |
 | 1.0     | 2026-06-28 | Project Team | Initial product roadmap |

@@ -12,8 +12,8 @@ This document outlines the required tools and environment configuration needed t
 
 ## 2. Prerequisites
 
-- **Flutter SDK:** Version 3.x (Ensure you are on the `stable` channel).
-- **Dart SDK:** Included with Flutter (Version 3.0 or higher).
+- **Flutter SDK:** Stable channel with Dart 3.12 or later.
+- **Dart SDK:** Included with Flutter; the application requires Dart 3.12 or later.
 - **IDE:** Visual Studio Code (recommended) or Android Studio.
 
 ## 3. Recommended VS Code Extensions
@@ -29,12 +29,17 @@ To ensure a consistent development experience, install the following extensions:
 1. Clone the repository: `git clone <repository_url>`
 2. Navigate to the app directory: `cd app`
 3. Fetch dependencies: `flutter pub get`
-4. Run the code generator (for Riverpod/Freezed, if utilized): `dart run build_runner build --delete-conflicting-outputs`
-5. Run the app: `flutter run`
+4. Run the app: `flutter run`
+
+Code generation is not part of the initial foundation. Do not add `build_runner`,
+Riverpod code generation, or Freezed until an approved implementation decision
+establishes a concrete need.
 
 ## 5. Build Configuration
 
 Currently, the primary target is Android. 
 - Ensure you have an Android Emulator configured or a physical device connected with USB Debugging enabled.
-- Web and iOS targets are disabled or unsupported for Version 1.
+- Version 1 is released for Android only. Keep the shared Dart code and selected
+  dependencies portable to iOS; do not remove generated platform support solely
+  to enforce the release scope.
 

@@ -127,12 +127,11 @@ The dashboard shall provide:
 Provide:
 
 * Asset allocation
-* Category allocation
-* Sector allocation (where data is available)
-* Investment summary
-* Portfolio diversification overview
+* Source-reported portfolio summary, clearly labelled with its statement date
+* Basic concentration analysis based only on supported source-reported data
 
-Advanced analytics (e.g., XIRR) may be introduced in later iterations if not ready for the initial release.
+Sector/category allocation, fund-overlap analysis, performance metrics, and
+advanced analytics (for example XIRR) are not Version 1 features.
 
 ---
 
@@ -141,10 +140,11 @@ Advanced analytics (e.g., XIRR) may be introduced in later iterations if not rea
 Version 1 recommendations include:
 
 * Missing nominee detection
-* Duplicate holdings
 * Concentration warnings
-* Portfolio diversification suggestions
-* Inactive folios (if identifiable)
+
+Recommendations must be deterministic, explanatory, and limited to facts that
+can be supported by imported CAS data. Duplicate import detection is included;
+duplicate-investment or fund-overlap inference is deferred.
 
 ---
 
@@ -153,11 +153,11 @@ Version 1 recommendations include:
 Allow users to:
 
 * View summary reports.
-* Export portfolio summaries.
-* Export holdings.
-* Export transaction history.
+* Export portfolio summaries, holdings, and transaction history as CSV files.
 
-The export format (PDF, CSV, etc.) will be finalized during implementation.
+PDF report generation is deferred. Exported files are sensitive and require an
+explicit user-selected destination and a clear warning that they leave
+application-controlled storage.
 
 ---
 
@@ -166,10 +166,10 @@ The export format (PDF, CSV, etc.) will be finalized during implementation.
 Provide settings for:
 
 * Theme (Light/Dark)
-* Database management
-* Import history
-* Backup & restore (optional)
+* Import history and scoped local-data management
 * About page
+
+Backup and restore are deferred from Version 1.
 
 ---
 
@@ -229,6 +229,18 @@ The following features are intentionally excluded:
 * Capital gains computation
 * Income tax reports
 * Tax filing integration
+
+## Deferred Portfolio Analytics
+
+* Sector or category allocation inferred from external/reference data
+* Fund-overlap or duplicate-investment inference
+* XIRR, CAGR, performance benchmarking, and portfolio trends
+* Financial effects of corporate actions beyond source-record capture
+
+## Deferred Data Management
+
+* Local backup and restore
+* PDF report generation
 
 ---
 
@@ -418,4 +430,5 @@ Major scope expansions should be reflected in new release planning documents rat
 
 | Version | Date       | Author       | Description                    |
 | ------- | ---------- | ------------ | ------------------------------ |
+| 1.1     | 2026-09-19 | Project Team | Narrowed Version 1 analytics, recommendations, reports, and maintenance scope. |
 | 1.0     | 2026-06-28 | Project Team | Initial project scope document |

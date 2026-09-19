@@ -31,7 +31,7 @@ This document does not define:
 - Physical database tables or SQL.
 - Detailed parser grammars and layout signatures.
 - Final UI screen composition.
-- Final valuation, duplicate identity, reconciliation, or partial-import policies.
+- Password-protected PDF behavior and remaining recommendation/security policies.
 - Cloud or network flows, which are outside Version 1.
 
 ## 3. Governing Principles
@@ -154,7 +154,8 @@ stateDiagram-v2
     Exported --> [*]
 ```
 
-This lifecycle is conceptual. It does not decide whether an approved partial-import policy will permit a validated subset to reach `Reconciled`; that remains an ADR decision.
+This lifecycle follows ADR-0003: material financial data is all-or-nothing, while
+explicitly tolerated irrelevant/unknown sections can produce warnings.
 
 ## 8. Data Representations and Ownership
 
@@ -238,7 +239,7 @@ flowchart TD
 | Format detection | Bounded extracted content | Issuer/layout/parser selection | Unknown format must not use arbitrary fallback. |
 | Section parsing | Extracted chunks and parser version | Candidate records, provenance, diagnostics | Syntax/shape failures remain explicit. |
 | Domain validation | Candidate records | Validated domain records or failures | Financial invariants and cross-record relationships. |
-| Reconciliation | Validated records plus existing identities | Approved change set | Exact policy requires ADR. |
+| Reconciliation | Validated records plus existing identities | Approved change set | Apply ADR-0002. |
 | Persistence mapping | Approved domain change set | Persistence models | Mapping must preserve precision and provenance. |
 | Transaction commit | Persistence models | Durable import result | Constraints and rollback protect consistency. |
 | Refresh | Import result | Updated dependent query state | Refresh occurs only after successful commit. |
@@ -261,11 +262,9 @@ The physical schema and exact aggregate transaction boundary are defined in data
 
 ### 10.4 Import Identity
 
-The final identity algorithm is unresolved. Data flow must support layered identification:
-
-1. A cheap pre-check may use available file metadata or a content hash to avoid unnecessary processing.
-2. A canonical logical identity may require issuer, statement period, investor/account scope, and normalized content.
-3. Database uniqueness and reconciliation must enforce the approved identity at commit time.
+ADR-0002 defines layered identification: SHA-256 of the full selected file is
+the exact-import duplicate key, while record-level semantic fingerprints and
+statement provenance perform overlap reconciliation at commit time.
 
 Filename, path, and modification time must not be the sole duplicate criteria.
 
@@ -355,11 +354,9 @@ sequenceDiagram
 
 The dashboard combines portfolio summary, allocation, recent imports, and quick insights through application-level composition. It must not assemble financial totals independently in widgets.
 
-Until valuation semantics are approved:
-
-- A value requiring unavailable market/NAV data is marked unavailable or tied explicitly to statement-provided values and dates.
-- The label "current value" must not imply real-time data.
-- Different widgets and reports must use the same approved portfolio summary contract.
+Under ADR-0004, a value requiring unavailable market/NAV data is unavailable;
+otherwise all widgets and reports use the same statement-dated, source-reported
+portfolio summary contract. The label "current value" must not imply real-time data.
 
 ### 12.3 Holdings and Transaction Flow
 
@@ -672,12 +669,7 @@ These invariants should be translated into automated tests and architecture chec
 
 | Decision | Affected Flows | Required Follow-up |
 | --- | --- | --- |
-| Canonical import identity | DF-01 | ADR plus database uniqueness design. |
-| Overlap and re-import reconciliation | DF-01, DF-11 | ADR plus business and database rules. |
-| Atomic rejection versus explicit partial import | DF-01, DF-02 | ADR plus UX/error design. |
 | Password-protected PDF behavior | DF-01 | Parser/import design and ADR if credentials are handled. |
-| Money/unit precision and rounding | DF-01, DF-03-DF-08 | ADR plus domain/database design. |
-| Portfolio valuation basis and date | DF-03, DF-06-DF-08 | Business rule and ADR. |
 | Sector/category reference data | DF-06, DF-07 | ADR preserving offline boundary. |
 | Background execution and import serialization | DF-01, DF-02 | ADR informed by profiling and plugin constraints. |
 | Report/export formats and safeguards | DF-08 | Report architecture and ADR. |
@@ -769,4 +761,5 @@ When generating implementation from this document:
 
 | Version | Date | Author | Description |
 | --- | --- | --- | --- |
+| 0.2 | 2026-09-19 | Project Team | Applied ADR-0002 through ADR-0004 to flow contracts. |
 | 0.1 | 2026-07-05 | Project Team | Initial draft of the data flow architecture. |

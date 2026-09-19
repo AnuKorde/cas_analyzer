@@ -282,7 +282,8 @@ sequenceDiagram
 - Cancellation before persistence leaves no portfolio records; cancellation behavior during a database transaction must be defined safely.
 - Temporary extracted content is released promptly and is not logged.
 
-The precise import identity, overlap reconciliation, password handling, and partial-import policy remain open decisions and require dedicated design or ADRs.
+Password handling remains an open decision. Import identity, overlap
+reconciliation, and partial-import policy are defined by ADR-0002 and ADR-0003.
 
 ## 11. Query and Insight Flow
 
@@ -543,7 +544,8 @@ When generating or reviewing implementation from this architecture:
 
 - Identify the target feature, layer, use case, and affected Feature IDs.
 - Preserve the dependency direction; concrete infrastructure must not leak into domain code.
-- Do not invent valuation, reconciliation, partial-import, security, or recommendation rules that are still open.
+- Apply ADR-0002 through ADR-0004; do not invent remaining password, security,
+  or recommendation rules that are still open.
 - Model expected failures explicitly and preserve safe provenance.
 - Include tests for boundary behavior, invalid input, duplicates, rollback, and deterministic results.
 - Avoid adding generic base classes, global services, or cross-feature helpers without demonstrated reuse.

@@ -201,7 +201,8 @@ Deletion, cleanup, restore, and migration operations require explicit transactio
 
 ## 11. Identity and Idempotency
 
-The database must support duplicate detection and safe retry. However, the exact canonical import identity remains open.
+The database supports duplicate detection and safe retry through the exact-file
+digest and record-level reconciliation rules defined by ADR-0002.
 
 The schema must be prepared to represent:
 
@@ -496,7 +497,7 @@ This architecture supports:
 When generating database implementation:
 
 - Read this document before creating schema, repositories, or migrations.
-- Do not invent answers for open identity, overlap, precision, partial import, or encryption decisions.
+- Apply ADR-0001 through ADR-0004; do not invent answers for the remaining encryption decision.
 - Keep SQL and SQLite package types inside the data/infrastructure layer.
 - Keep repository interfaces domain-owned and implementation-free.
 - Use transactions for accepted import commits and destructive maintenance operations.

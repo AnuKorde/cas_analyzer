@@ -461,6 +461,8 @@ Sector Exposure
 
 Priority: Medium
 
+Release: Version 2
+
 Display sector concentration.
 
 ---
@@ -470,6 +472,8 @@ Display sector concentration.
 Portfolio Trends
 
 Priority: Medium
+
+Release: Version 2
 
 Provide historical portfolio insights where data is available.
 
@@ -502,6 +506,8 @@ Detect excessive concentration.
 Duplicate Investments
 
 Priority: High
+
+Release: Version 2
 
 Identify overlapping holdings.
 
@@ -586,6 +592,8 @@ Support Light and Dark themes.
 Backup and Restore
 
 Priority: Medium
+
+Release: Version 1.1
 
 Allow local backup and restoration of application data.
 
@@ -731,4 +739,5 @@ Future versions of this document may include:
 
 | Version | Date       | Author       | Description             |
 | ------- | ---------- | ------------ | ----------------------- |
+| 1.1     | 2026-09-19 | Project Team | Assigned deferred analytics and backup features to later releases. |
 | 1.0     | 2026-06-28 | Project Team | Initial feature catalog |

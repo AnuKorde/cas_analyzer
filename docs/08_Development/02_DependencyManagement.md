@@ -30,8 +30,18 @@ Before adding a package, ask:
 - `sqflite`: Database.
 - `syncfusion_flutter_pdf`: PDF extraction (Subject to licensing review).
 - `fl_chart`: Data visualization.
+- `path`: Database file-path construction.
+- `shared_preferences`: Non-sensitive application preferences only.
+- `logger`: Redacted local diagnostics only.
+- `mocktail`: Test doubles.
+
+`http` and `flutter_secure_storage` are not approved core dependencies. They must
+not be added without a documented need and the applicable ADR or security review.
 
 ## 5. Version Pinning
 
-Use caret syntax (`^`) for minor updates, but avoid blanket `any` versions. Regularly update dependencies and run the test suite to catch breaking changes early.
+Use caret syntax (`^`) for compatible updates, but avoid blanket `any` versions.
+The committed `pubspec.lock` in `app/` is the resolved dependency record for an
+application release. Regularly update dependencies and run the test suite to
+catch breaking changes early.
 

@@ -17,13 +17,13 @@ The project follows Semantic Versioning (`MAJOR.MINOR.PATCH`).
 - **MINOR:** New features (e.g., new charts, support for a new CAS format) that are backwards compatible.
 - **PATCH:** Bug fixes and performance improvements.
 
-The version is maintained in `app/pubspec.yaml` as `version: 1.0.0+1` (where `+1` is the build number).
+The version is maintained in `app/pubspec.yaml` as `version: 0.1.0+1` (where `+1` is the build number).
 
 ## 3. Android Build Steps
 
 When preparing a release for Android:
 
-1. Update the version and build number in `pubspec.yaml`.
+1. From `app/`, update the version and build number in `pubspec.yaml`.
 2. Ensure the working tree is clean and all tests pass (`flutter test`).
 3. Run the release build command:
    ```bash

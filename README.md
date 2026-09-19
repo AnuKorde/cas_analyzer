@@ -1,5 +1,13 @@
 # CAS Analyzer
 
+## Repository layout
+
+`app/` is the only Flutter package in this repository. Run Flutter and Dart
+commands from that directory, for example `cd app; flutter pub get`.
+
+The repository root intentionally has no `pubspec.yaml`; documentation, samples,
+and tooling live alongside the application package.
+
 **Version:** 1.0.0 (Planning Phase)
 
 **Project Status:** Design & Architecture
